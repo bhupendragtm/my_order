@@ -3,7 +3,8 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Customer} from './customer.model';
 
 @model()
 export class Todo extends Entity {
@@ -29,6 +30,9 @@ export class Todo extends Entity {
     type: 'boolean',
   })
   isComplete?: boolean;
+
+  @belongsTo(() => Customer, {name: 'todo'})
+  customerId: string;
 
   constructor(data?: Partial<Todo>) {
     super(data);

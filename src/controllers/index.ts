@@ -6,3 +6,4 @@
 export * from './todo.controller';
 export * from './user.controller';
 export * from './order-customer.controller';
+export * from './todo-customer.controller';

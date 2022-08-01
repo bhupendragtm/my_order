@@ -3,17 +3,23 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-import {inject} from '@loopback/core';
-import {DefaultCrudRepository} from '@loopback/repository';
+import {inject, Getter} from '@loopback/core';
+import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
 import {DbDataSource} from '../datasources';
-import {Todo, TodoRelations} from '../models';
+import {Todo, TodoRelations, Customer} from '../models';
+import {CustomerRepository} from './customer.repository';
 
 export class TodoRepository extends DefaultCrudRepository<
   Todo,
   typeof Todo.prototype.id,
   TodoRelations
 > {
-  constructor(@inject('datasources.db') dataSource: DbDataSource) {
+
+  public readonly todo: BelongsToAccessor<Customer, typeof Todo.prototype.id>;
+
+  constructor(@inject('datasources.db') dataSource: DbDataSource, @repository.getter('CustomerRepository') protected customerRepositoryGetter: Getter<CustomerRepository>,) {
     super(Todo, dataSource);
+    this.todo = this.createBelongsToAccessorFor('todo', customerRepositoryGetter,);
+    this.registerInclusionResolver('todo', this.todo.inclusionResolver);
   }
 }
